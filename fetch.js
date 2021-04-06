@@ -5,11 +5,12 @@ let npt, arr = {}, second = 1, fpt="no"
 let badarray = {}
 
 let ratingreg = new RegExp(/.+\/10/) // smh he had to ruin my beautiful regex because sometimes its not a definitive score (CLASSIC/:triumph:/etc)
-let normalreg = new RegExp(/[a-zA-Z0-9]{0,10}\/10/)
+let normalreg = new RegExp(/[0-9]{0,10}\/10/)
 
 async function getPlayListItems(pid, npt=null) {
     if(npt === fpt) { // the current page token is the first one
         console.log("finished!")
+        require("./override.js")
         return;
     }
 
@@ -33,6 +34,8 @@ async function getPlayListItems(pid, npt=null) {
             a.snippet.title.includes("EP REVIEW")) {
             let r = a.snippet.description.match(normalreg) // this is just numbers
             let alsocouldbe = a.snippet.description.match(ratingreg) // wack
+            if(r && r[0] === "/10") r[0] = alsocouldbe
+            if(a.snippet.description.toLowerCase().includes("classic/10")) r = "classic/10"
             // if(r) console.log(r[0].replace('\\n').trim())
             let q = a.snippet.title.split("-"), artist, album;
             if(!q[1] || !q[0]) {
@@ -59,7 +62,7 @@ async function getPlayListItems(pid, npt=null) {
             }
             arr[a.snippet.resourceId.videoId] = { // https://google.com/search?q=javascript+remove+duplicates+from+array
                 title: a.snippet.title,
-                rating: r || "???",
+                rating: r || "???/10",
                 album: album,
                 artist: artist,
                 date: date,
