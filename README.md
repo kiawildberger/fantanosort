@@ -1,0 +1,2 @@
+i wanted to make a stupid meme edit of anthony fantano giving an ass review to an album but i had to go to like shopping.com or something to sort the reviews by most disliked and i thought it would be cool if there was a catalogue of fantano reviews that could be sorted by actual score instead of likes/dislikes/comments/views
+so i made it myself~
