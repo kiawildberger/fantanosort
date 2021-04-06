@@ -4,7 +4,8 @@ let playlistid = "UUt7fwAhXDy3oNFTAzF2o8Pw"
 let npt, arr = {}, second = 1, fpt="no"
 let badarray = {}
 
-let ratingreg = new RegExp(/\s?.+\/10\s?/) // smh he had to ruin my beautiful regex because sometimes its not a definitive score (CLASSIC/:triumph:/etc)
+let ratingreg = new RegExp(/.+\/10/) // smh he had to ruin my beautiful regex because sometimes its not a definitive score (CLASSIC/:triumph:/etc)
+let normalreg = new RegExp(/[a-zA-Z0-9]{0,10}\/10/)
 
 async function getPlayListItems(pid, npt=null) {
     if(npt === fpt) { // the current page token is the first one
@@ -30,7 +31,8 @@ async function getPlayListItems(pid, npt=null) {
         if(a.snippet.title.includes("ALBUM REVIEW") || // did i miss some? i dont think so
             a.snippet.title.includes("MIXTAPE REVIEW") || // also maybe i should do this with regex but lmao no
             a.snippet.title.includes("EP REVIEW")) {
-            let r = a.snippet.description.match(ratingreg)
+            let r = a.snippet.description.match(normalreg) // this is just numbers
+            let alsocouldbe = a.snippet.description.match(ratingreg) // wack
             // if(r) console.log(r[0].replace('\\n').trim())
             let q = a.snippet.title.split("-"), artist, album;
             if(!q[1] || !q[0]) {
@@ -68,7 +70,8 @@ async function getPlayListItems(pid, npt=null) {
         }
     })
     fs.writeFileSync("result.json", JSON.stringify(arr));
-    fs.writeFileSync("manual_todo.json", JSON.stringify(badarray))
+    // not sure about manual_todo.json cos i guess i can just assume that they 
+    // fs.writeFileSync("manual_todo.json", JSON.stringify(badarray))
     getPlayListItems(playlistid, npt)
 };
 
