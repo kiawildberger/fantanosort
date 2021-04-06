@@ -2,8 +2,9 @@ const axios = require("axios"), fs = require("fs"), config = require("./config.j
 const KEY = config.ytkey;
 let playlistid = "UUt7fwAhXDy3oNFTAzF2o8Pw"
 let npt, arr = {}, second = 1, fpt="no"
+let badarray = {}
 
-let ratingreg = new RegExp(/\s?\d{1}\/10\s?/)
+let ratingreg = new RegExp(/\s?.+\/10\s?/) // smh he had to ruin my beautiful regex because sometimes its not a definitive score (CLASSIC/:triumph:/etc)
 
 async function getPlayListItems(pid, npt=null) {
     if(npt === fpt) { // the current page token is the first one
@@ -41,9 +42,22 @@ async function getPlayListItems(pid, npt=null) {
             let months = ["Jan ",'Feb ','Mar ','Apr ','May ','Jun ',"Jul ",'Aug ',"Sep ","Oct ","Nov ","Dec "]
             let date = a.snippet.publishedAt.split("T")[0];
             let nicedate = months[date.split('-')[1]-1]+date.split('-')[2]+", "+date.split('-')[0]
+            if(r === null) {
+                // this means that theres just no score in the description which is ANNOYING and BAD
+                badarray[a.snippet.resourceId.videoId] = {
+                    title: a.snippet.title,
+                    rating: "not in the description",
+                    album: album,
+                    artist: artist,
+                    date: date,
+                    nicedate: nicedate,
+                    id: a.snippet.resourceId.videoId,
+                    thumb: a.snippet.thumbnails.default.url
+                }
+            }
             arr[a.snippet.resourceId.videoId] = { // https://google.com/search?q=javascript+remove+duplicates+from+array
                 title: a.snippet.title,
-                rating: r,
+                rating: r || "???",
                 album: album,
                 artist: artist,
                 date: date,
@@ -54,6 +68,7 @@ async function getPlayListItems(pid, npt=null) {
         }
     })
     fs.writeFileSync("result.json", JSON.stringify(arr));
+    fs.writeFileSync("manual_todo.json", JSON.stringify(badarray))
     getPlayListItems(playlistid, npt)
 };
 
