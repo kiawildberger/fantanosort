@@ -2,10 +2,12 @@
     <title>TheNeedleDrop Review Scores</title>
 </head>
 <body>
-    <div align="center">
-        <div class="text">
-            This is a list of all of Anthony Fantano's album reviews &mdash; though I'm sure I'm missing some &mdash; made easily searchable and sortable by score, upload date, and name. Dates and times are most likely in UTC.
-        </div>
+    <div>
+        <div style="margin-top:4em;margin-left:4em;">
+            This is a list of all of Anthony Fantano's album reviews &mdash; though I'm sure I'm missing some &mdash; made easily searchable and sortable by score, upload date, and name. Dates and times are in UTC.<br><br>
+            If a score is off or something went wrong, head over to the <a href="https://github.com/kiawildberger/fantanosort">repo</a>, look in override.js, and submit a pull request, all the json data can be changed.
+        </div><br>
+        <input type="text" id="filter" placeholder="Filter"> <input type="button" value="Apply"><span id="countresults"></span>
         <table id="table">
             <tr>
                 <th>Video</th>
@@ -20,7 +22,39 @@
         </table>
     </div>
     <style>
+        @import url("https://fonts.googleapis.com/css?family=Assistant");
+        body { font-family:"Assistant"; }
+        table { margin:2em 0 0 8em; position:relative; border-collapse:collapse; }
+        th { padding:0 1em 1.5em 0; }
+        tr { border-bottom:2px solid black; }
+        td { border-right:2px solid black; margin:0; padding:1em 1em 0.8em 1em; }
+        td:nth-of-type(1n) { border-left:2px solid black; } /* video */
+        td:nth-of-type(2n) { } /* album */
+        td:nth-of-type(3n) { } /* artist */
+        td:nth-of-type(4n) { } /* score */
+        td:nth-of-type(5n) { } /* date */
 
+        .visible { display:block; }
+        #filter {
+            border:1px solid #1ED0D9;
+            font-size:1em;
+            height:3em;
+            width:15em;
+            margin-left:12em;
+            margin-top:4em;
+            border-radius:2px;
+            padding:3px;
+        }
+        input[type="button"] {
+            background:#1ED0D9;
+            border:none;
+            cursor:pointer;
+            border-radius:2px;
+            margin-left:1em;
+            height:2em;
+            width:4em;
+        }
+        #countresults { font-style:italic; margin-left:3em; }
     </style>
     <script src="index.js"></script>
 </body>
