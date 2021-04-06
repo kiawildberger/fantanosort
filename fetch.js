@@ -1,5 +1,6 @@
-const axios = require("axios"), fs = require("fs"), config = require("./config.json")
-const KEY = config.ytkey;
+const axios = require("axios"), fs = require("fs")
+// config = require("./config.json")
+const KEY = process.argv[2]
 let playlistid = "UUt7fwAhXDy3oNFTAzF2o8Pw"
 let npt, arr = {}, second = 1, fpt="no"
 let badarray = {}
