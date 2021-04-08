@@ -17,7 +17,7 @@ function createTR(i) {
     table.appendChild(tr)
 }
 function resetTR() {
-    Array.from(document.querySelectorAll("tr")).forEach(e => e.remove())
+    Array.from(document.querySelectorAll("tr")).forEach(e => {if(e.id != "headers")e.remove()})
 }
 
 async function populate() {
@@ -25,39 +25,32 @@ async function populate() {
     json = await data.json()
     for(i in json) { // huge
         i = json[i]
-        // if(i.artist === "Mogwai") return;
         if(!i.artist||!i.album) return;
-        array.push({
-            artist:i.artist,
-            album:i.album,
-            rating:i.rating,
-            date:i.date,
-            nicedate:i.nicedate,
-            id:i.id,
-            thumb:i.thumb
-        })
+        array.push(i)
         createTR(i)
     }
 }
-populate()
 
+// all this just so it shows the "** reviews loaded" smh
+async function start() { await populate(); countresults.innerText=array.length+" reviews loaded" } start()
 
 filter.addEventListener("keypress", e => { if(e.keyCode === 13) process() })
 button.addEventListener("click", process)
 
 function process() {
-    if(filter.value === "") array.forEach(e => createTR)
+    let total;
+    if(filter.value === "") total = array // yes i understand what this means
     let artists = array.filter(x => x.artist.toLowerCase().includes(filter.value.toLowerCase()))
     let albums = array.filter(x => x.album.toLowerCase().includes(filter.value.toLowerCase()))
     resetTR()
-    let total = Array.from(artists.concat(albums))
+    if(!total) total = Array.from(artists.concat(albums))
     if(total.length === 0) {
         countresults.innerText = "nothing found for \""+filter.value+"\""
     } else {
-        countresults.innerText = total.length +" results found for \""+filter.value+"\""
+        if(filter.value!="") countresults.innerText = total.length +" results found for \""+filter.value+"\""
         total.forEach(e => {
             createTR(e)
         })
     }
-
+    if(filter.value==="") countresults.innerText = array.length+" reviews loaded"
 }
