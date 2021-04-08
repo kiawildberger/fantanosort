@@ -1,11 +1,11 @@
 name: Node.js CI
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+#   push:
+#     branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
   schedule:
-    - cron: 0 0 * * *
+    - cron: '*/5 * * * *'
 
 jobs:
   build:
@@ -31,5 +31,5 @@ jobs:
         add: 'result.json'
         author_name: kiawildberger
         author_email: kiawildberger@gmail.com
-        message: 'commit result from actions'
+        message: 'update data from action'
         push: origin master # do it work? is it necessary? we will see
