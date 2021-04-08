@@ -52,9 +52,9 @@ function process() {
     resetTR()
     let total = Array.from(artists.concat(albums))
     if(total.length === 0) {
-        countresults.innerText = "nothing found for "+filter.value
+        countresults.innerText = "nothing found for \""+filter.value+"\""
     } else {
-        countresults.innerText = total.length +" results found for "+filter.value
+        countresults.innerText = total.length +" results found for \""+filter.value+"\""
         total.forEach(e => {
             createTR(e)
         })
