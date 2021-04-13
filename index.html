@@ -7,10 +7,19 @@
     <div>
         <div style="margin-top:4em;margin-left:4em;">
             This is a list of the majority of Anthony Fantano's album reviews &mdash; though I'm sure I'm missing some &mdash; made easily searchable, and maybe sortable in the future? Dates and times are in UTC, and data is updated hourly.
-            <br>Sorting by score works but not very well - it breaks about halfway down so not all of them are sorted, but I think it gets all the 10s and 0s, plus scrolling halfway down with just the wheel takes ages. If someone who isn't lazy wants to help with this let me know!<br><br>
+            <br>Sorting by score works but not very well - it breaks about halfway down so not all of them are sorted, but I think it gets all the 10s and 0s.<br><br>
             If you want to help or correct some data, head over to the <a href="https://github.com/kiawildberger/fantanosort">repo</a> and look in override.js for instructions on how to edit the review details.
         </div><br>
         <input type="text" id="filter" placeholder="Filter"> <input type="button" value="Apply" title="leave search blank for full list"><span id="countresults"></span>
+        <div class="dropmode">
+            <label for="sortmode-drop">Sort by: </label>
+            <select id="sortmode-drop">
+                <option value="null" selected disabled hidden></option>
+                <option value="0">Date (latest)</option>
+                <option value="1">Scores (descending)</option>
+                <option value="2">Scores (ascending)</option>
+            </select>
+        </div>
         <table id="table">
             <tr id="headers">
                 <th>Video</th>
@@ -61,6 +70,18 @@
         }
         #countresults { font-style:italic; margin-left:3em; }
         #ssort { margin-left:0.5em; cursor:pointer; font-style:italic; font-size:0.8em; }
+        .dropmode { 
+            position:absolute;
+            top:25%;
+            right:4em;
+        }
+        #sortmode-drop {
+            border:1px solid #1ed0d9;
+            font-size:0.8em;
+            height:3em;
+            width:12em;
+            margin-left:1em;
+        }
     </style>
     <script src="index.js"></script>
 </body>

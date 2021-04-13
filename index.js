@@ -2,7 +2,8 @@ let table = document.getElementById('table'),
     filter = document.getElementById("filter"), 
     button = document.querySelector('input[type="button"]'),
     countresults = document.getElementById("countresults"),
-    ssort = document.getElementById("ssort")
+    ssort = document.getElementById("ssort"),
+    sortdrop = document.getElementById("sortmode-drop")
 let json, fullarr = [], neversorted = [];
 
 function createTR(i) {
@@ -33,6 +34,7 @@ async function populate() {
         i = json[i]
         i.rating = i.rating[0]
         if(i.rating === null) i.rating = "1/10"
+        if(i.rating === "c") i.rating = "classic"
         // if(i.rating && i.rating instanceof Array) i.rating = i.rating[0] // why is it null
         i.flatscore = parseInt(i.rating.toString().replace("/10")); // some are NaN probably so jus make those special cases at the bottom ig (or the top???)
         i.flatscore = (i.flatscore > 10) ? i.flatscore = 7 : i.flatscore; // 7 is average?? idk should be in override.js so ig it doesnt matter too much
@@ -51,7 +53,8 @@ button.addEventListener("click", process)
 
 function process() {
     let total;
-    if(filter.value === "") total = neversorted // yes i understand what this means
+    sortdrop.value = "null"
+    if(filter.value === "") total = neversorted
     let artists = fullarr.filter(x => x.artist.toLowerCase().includes(filter.value.toLowerCase()))
     let albums = fullarr.filter(x => x.album.toLowerCase().includes(filter.value.toLowerCase()))
     resetTR()
@@ -100,7 +103,16 @@ function sort(sortmode) {
 let sortmode = 0; // 0 neutral 1 ascending 2 descending
 let sortmodecodes = ["&mdash;", "&#8593;", "&#8595;"]
 ssort.addEventListener("click", () => {
-    sortmode = (sortmode === 2) ? 0 : sortmode+1; // very smart or something idk
+    sortmode = (sortmode === 2) ? 0 : parseInt(sortmode)+1; // very smart or something idk
+    if(sortmode === 3) sortmode = 0 // why is it 3 sometimes
     ssort.innerHTML = sortmodecodes[sortmode]
+    sortdrop.value = "null"
     sort(sortmode)
+})
+sortdrop.addEventListener("change", () => {
+    if(sortdrop.value === "null") return;
+    sortmode = sortdrop.value;
+    sortmode = (sortmode === 3) ? 0 : sortdrop.value;
+    ssort.innerHTML = sortmodecodes[parseInt(sortmode)]
+    sort(parseInt(sortmode))
 })
