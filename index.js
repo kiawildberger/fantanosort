@@ -1,8 +1,9 @@
 let table = document.getElementById('table'), 
     filter = document.getElementById("filter"), 
     button = document.querySelector('input[type="button"]'),
-    countresults = document.getElementById("countresults")
-let json, array = []
+    countresults = document.getElementById("countresults"),
+    ssort = document.getElementById("ssort")
+let json, fullarr = [], neversorted = [];
 
 function createTR(i) {
     let colors = ["#FF5F33", "#CC4C29", "#96381E", "#0A361F", "#692715", "#36140B", "#14693D", "#1D9657", "#27CC77", "#30FF94", "#30FF94"]
@@ -20,28 +21,39 @@ function resetTR() {
     Array.from(document.querySelectorAll("tr")).forEach(e => {if(e.id != "headers")e.remove()})
 }
 
+// Spilligion
+function find(album) {
+    return neversorted.filter(x => x.album == album)
+}
+
 async function populate() {
     let data = await fetch("https://raw.githubusercontent.com/kiawildberger/fantanosort/master/result.json")
     json = await data.json()
     for(i in json) { // huge
         i = json[i]
+        i.rating = i.rating[0]
+        if(i.rating === null) i.rating = "1/10"
+        // if(i.rating && i.rating instanceof Array) i.rating = i.rating[0] // why is it null
+        i.flatscore = parseInt(i.rating.toString().replace("/10")); // some are NaN probably so jus make those special cases at the bottom ig (or the top???)
+        i.flatscore = (i.flatscore > 10) ? i.flatscore = 7 : i.flatscore; // 7 is average?? idk should be in override.js so ig it doesnt matter too much
         if(!i.artist||!i.album) return;
-        array.push(i)
+        fullarr.push(i)
+        neversorted.push(i)
         createTR(i)
     }
 }
 
 // all this just so it shows the "** reviews loaded" smh
-async function start() { await populate(); countresults.innerText=array.length+" reviews loaded" } start()
+async function start() { await populate(); countresults.innerText=fullarr.length+" reviews loaded" } start()
 
 filter.addEventListener("keypress", e => { if(e.keyCode === 13) process() })
 button.addEventListener("click", process)
 
 function process() {
     let total;
-    if(filter.value === "") total = array // yes i understand what this means
-    let artists = array.filter(x => x.artist.toLowerCase().includes(filter.value.toLowerCase()))
-    let albums = array.filter(x => x.album.toLowerCase().includes(filter.value.toLowerCase()))
+    if(filter.value === "") total = neversorted // yes i understand what this means
+    let artists = fullarr.filter(x => x.artist.toLowerCase().includes(filter.value.toLowerCase()))
+    let albums = fullarr.filter(x => x.album.toLowerCase().includes(filter.value.toLowerCase()))
     resetTR()
     if(!total) total = Array.from(artists.concat(albums))
     if(total.length === 0) {
@@ -52,5 +64,43 @@ function process() {
             createTR(e)
         })
     }
-    if(filter.value==="") countresults.innerText = array.length+" reviews loaded"
+    if(filter.value==="") countresults.innerText = neversorted.length+" reviews loaded"
 }
+
+
+// maybe i should use something other than the regular-ass js sort like https://github.com/mziccard/node-timsort/
+// or i should sort em when fetch.js run and just display the data so it loads fast(er)
+
+function sort(sortmode) {
+    let sortedarray = fullarr;
+    countresults.innerText = ''
+    if(sortmode === 0) {
+        resetTR();
+        neversorted.forEach(e => {
+            createTR(e)
+        })
+        return;
+    }
+    if(sortmode === 1) {
+        sortedarray = sortedarray.sort((a, b) => b.flatscore - a.flatscore)
+        resetTR()
+        sortedarray.forEach(e => {
+            createTR(e)
+        })
+    }
+    if(sortmode === 2) {
+        sortedarray = sortedarray.sort((a, b) => a.flatscore - b.flatscore)
+        resetTR()
+        sortedarray.forEach(e => {
+            createTR(e)
+        })
+    }
+}
+
+let sortmode = 0; // 0 neutral 1 ascending 2 descending
+let sortmodecodes = ["&mdash;", "&#8593;", "&#8595;"]
+ssort.addEventListener("click", () => {
+    sortmode = (sortmode === 2) ? 0 : sortmode+1; // very smart or something idk
+    ssort.innerHTML = sortmodecodes[sortmode]
+    sort(sortmode)
+})

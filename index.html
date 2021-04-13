@@ -1,12 +1,13 @@
 <head>
     <title>fantanosort - theneedledrop reviews, sorted</title>
-    <link rel="favicon" href="./favicon.ico"/>
+    <link rel="favicon" href="./fantanosort/favicon.ico"/>
 </head>
 <body>
     <div>
         <div style="margin-top:4em;margin-left:4em;">
-            This is a list of the majority of Anthony Fantano's album reviews &mdash; though I'm sure I'm missing some &mdash; made easily searchable, and maybe sortable in the future? Dates and times are in UTC, and data is updated hourly.<br><br>
-            If a score is off or it looks like something went wrong, head over to the <a href="https://github.com/kiawildberger/fantanosort">repo</a> and look in override.js for instructions on how to edit the review details.
+            This is a list of the majority of Anthony Fantano's album reviews &mdash; though I'm sure I'm missing some &mdash; made easily searchable, and maybe sortable in the future? Dates and times are in UTC, and data is updated hourly.
+            <br>Sorting by score works but not very well - it breaks about halfway down so not all of them are sorted, but I think it gets all the 10s and 0s, plus scrolling halfway down with just the wheel takes ages. If someone who isn't lazy wants to help with this let me know!<br><br>
+            If you want to help or correct some data, head over to the <a href="https://github.com/kiawildberger/fantanosort">repo</a> and look in override.js for instructions on how to edit the review details.
         </div><br>
         <input type="text" id="filter" placeholder="Filter"> <input type="button" value="Apply" title="leave search blank for full list"><span id="countresults"></span>
         <table id="table">
@@ -14,7 +15,9 @@
                 <th>Video</th>
                 <th>Album</th>
                 <th>Artist</th>
-                <th>Score</th>
+                <th>Score<span id="ssort">&mdash;</span></th>
+                <!-- &mdash; for unsorted, &#8593; for ascending score and &#8595; for descending -->
+                <!-- descending means the top scores are on top -->
                 <th>Date</th>
             </tr>
             <tr>
@@ -56,6 +59,7 @@
             width:4em;
         }
         #countresults { font-style:italic; margin-left:3em; }
+        #ssort { margin-left:0.5em; cursor:pointer; font-style:italic; font-size:0.8em; }
     </style>
     <script src="index.js"></script>
 </body>

@@ -19,6 +19,7 @@
        of course there are a bunch of other ones, some of which i dont use but they're still there. check fetch.js for em all
     */
 
-
+    set("D86O_TGb45Q", "rating", "what/10")
+    
     fs.writeFileSync("./result.json", JSON.stringify(data))
 })();
