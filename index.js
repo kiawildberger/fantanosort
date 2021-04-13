@@ -32,7 +32,7 @@ async function populate() {
     json = await data.json()
     for(i in json) { // huge
         i = json[i]
-        i.rating = i.rating[0]
+        if(i.rating instanceof Array) i.rating = i.rating[0]
         if(i.rating === null) i.rating = "1/10"
         if(i.rating === "c") i.rating = "classic"
         // if(i.rating && i.rating instanceof Array) i.rating = i.rating[0] // why is it null
