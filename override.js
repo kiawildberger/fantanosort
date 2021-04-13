@@ -20,6 +20,7 @@
     */
 
     set("D86O_TGb45Q", "rating", "what/10")
+    set("CJDcbwpsjU0", "rating", "0.94721")
     
     fs.writeFileSync("./result.json", JSON.stringify(data))
 })();

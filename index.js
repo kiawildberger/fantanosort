@@ -36,7 +36,7 @@ async function populate() {
         if(i.rating === null) i.rating = "1/10"
         if(i.rating === "c") i.rating = "classic"
         // if(i.rating && i.rating instanceof Array) i.rating = i.rating[0] // why is it null
-        i.flatscore = parseInt(i.rating.toString().replace("/10")); // some are NaN probably so jus make those special cases at the bottom ig (or the top???)
+        i.flatscore = parseFloat(i.rating.toString().replace("/10")); // some are NaN probably so jus make those special cases at the bottom ig (or the top???)
         i.flatscore = (i.flatscore > 10) ? i.flatscore = 7 : i.flatscore; // 7 is average?? idk should be in override.js so ig it doesnt matter too much
         if(!i.artist||!i.album) return;
         fullarr.push(i)
