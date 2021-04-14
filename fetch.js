@@ -7,6 +7,7 @@ let badarray = {}
 
 let ratingreg = new RegExp(/.+\/10/) // smh he had to ruin my beautiful regex because sometimes its not a definitive score (CLASSIC/:triumph:/etc)
 let normalreg = new RegExp(/[0-9]{0,10}\/10/)
+let total = 0, bad = 0, good = 0;
 
 async function getPlayListItems(pid, npt=null) {
     if(npt === fpt) { // the current page token is the first one
@@ -44,6 +45,7 @@ async function getPlayListItems(pid, npt=null) {
             } else {
                 artist = q[0].trim(), album = q[1].replace(/[A-Z]+ REVIEW/, "").trim()
             }
+            if(artist === "Death Grips" || album === "The Money Store") console.log(a.snippet.title)
             // try this when doing the search: https://flaviocopes.com/how-to-sort-array-by-date-javascript/
             let months = ["Jan ",'Feb ','Mar ','Apr ','May ','Jun ',"Jul ",'Aug ',"Sep ","Oct ","Nov ","Dec "]
             let date = a.snippet.publishedAt.split("T")[0];
@@ -60,6 +62,7 @@ async function getPlayListItems(pid, npt=null) {
                     id: a.snippet.resourceId.videoId,
                     thumb: a.snippet.thumbnails.default.url
                 }
+                bad++
             }
             arr[a.snippet.resourceId.videoId] = { // https://google.com/search?q=javascript+remove+duplicates+from+array
                 title: a.snippet.title,
@@ -71,9 +74,11 @@ async function getPlayListItems(pid, npt=null) {
                 id: a.snippet.resourceId.videoId,
                 thumb: a.snippet.thumbnails.default.url
             }
+            total++;
         }
     })
-    fs.writeFileSync("result.json", JSON.stringify(arr));
+    console.log(Object.keys(arr).length)
+    // fs.writeFileSync("result.json", JSON.stringify(arr));
     // not sure about manual_todo.json cos i guess i can just assume that they 
     // fs.writeFileSync("manual_todo.json", JSON.stringify(badarray))
     getPlayListItems(playlistid, npt)

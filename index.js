@@ -22,19 +22,23 @@ function resetTR() {
     Array.from(document.querySelectorAll("tr")).forEach(e => {if(e.id != "headers")e.remove()})
 }
 
-// Spilligion
 function find(album) {
-    return neversorted.filter(x => x.album == album)
+    return neversorted.filter(x => x.album == album) || fullarr.filter(x => x.album == album)
 }
 
 async function populate() {
     let data = await fetch("https://raw.githubusercontent.com/kiawildberger/fantanosort/master/result.json")
+    // let data = await fetch("127.0.0.1:5500/result.json")
     json = await data.json()
-    for(i in json) { // huge
-        i = json[i]
+    console.log(Object.values(json).length) // this is correctly 2388
+    console.log(Object.values(json)[0])
+    // for(q in json) { // huge
+    Object.values(json).forEach(i => {
+        // i = json[q]
         if(i.rating instanceof Array) i.rating = i.rating[0]
         if(i.rating === null) i.rating = "1/10"
         if(i.rating === "c") i.rating = "classic"
+        // if(i.artist === "Death Grips") console.log(i)
         // if(i.rating && i.rating instanceof Array) i.rating = i.rating[0] // why is it null
         i.flatscore = parseFloat(i.rating.toString().replace("/10")); // some are NaN probably so jus make those special cases at the bottom ig (or the top???)
         i.flatscore = (i.flatscore > 10) ? i.flatscore = 7 : i.flatscore; // 7 is average?? idk should be in override.js so ig it doesnt matter too much
@@ -42,7 +46,7 @@ async function populate() {
         fullarr.push(i)
         neversorted.push(i)
         createTR(i)
-    }
+    })
 }
 
 // all this just so it shows the "** reviews loaded" smh
@@ -86,12 +90,14 @@ function sort(sortmode) {
     }
     if(sortmode === 1) {
         sortedarray = sortedarray.sort((a, b) => b.flatscore - a.flatscore)
+        sortedarray = sortedarray.sort((a, b) => b.flatscore - a.flatscore)
         resetTR()
         sortedarray.forEach(e => {
             createTR(e)
         })
     }
     if(sortmode === 2) {
+        sortedarray = sortedarray.sort((a, b) => a.flatscore - b.flatscore)
         sortedarray = sortedarray.sort((a, b) => a.flatscore - b.flatscore)
         resetTR()
         sortedarray.forEach(e => {
