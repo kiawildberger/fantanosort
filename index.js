@@ -99,7 +99,12 @@ function sort(sortmode) {
 
         ordered_sorted = neverordered;
         sortedarray = ordered_sorted;
-        if(sortedarray[sortedarray.length-1][0].flatscore === "10") sortedarray.reverse();
+        if(sortedarray[sortedarray.length-1][0].flatscore === "10") {
+            let others = sortedarray.shift();
+            console.log(others[0].rating)
+            sortedarray.reverse();
+            sortedarray.push(others)
+        }
         resetTR()
         sortedarray.flat().forEach(e => {
             if(e.rating === null || e.rating[0] === null) e.rating = "no rating"
@@ -112,8 +117,12 @@ function sort(sortmode) {
         // if(parseFloat(sortedarray[0][0].rating) === NaN) sortedarray.reverse()
         ordered_sorted = neverordered;
         sortedarray = ordered_sorted;
-        console.log(sortedarray[0][0].flatscore)
-        if(sortedarray[0][0].flatscore === "10") sortedarray.reverse();
+        if(sortedarray[0][0].flatscore === "10") {
+            let others = sortedarray.pop()
+            console.log(others[0].rating)
+            sortedarray.reverse();
+            sortedarray.push(others)
+        }
         resetTR()
         sortedarray.flat().forEach(e => {
             createTR(e)
