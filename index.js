@@ -9,7 +9,7 @@ let json, fullarr = [], neversorted = [];
 function createTR(i) {
     let colors = ["#FF5F33", "#CC4C29", "#96381E", "#0A361F", "#692715", "#36140B", "#14693D", "#1D9657", "#27CC77", "#30FF94", "#30FF94"]
     let tr = document.createElement("tr")
-    let score = i.rating[0], color = colors[i.rating.toString().split('/')[0]];
+    let score = i.rating[0] || "no rating", color = colors[i.rating[0].toString().split('/')[0]];
     if(i.rating instanceof Array) score = i.rating[0]
     tr.innerHTML = `<td><a href="https://youtube.com/watch?v=${i.id}" target="_blank"><img src="${i.thumb}"</a></td>
     <td>${i.album}</td>
@@ -25,13 +25,15 @@ function resetTR() {
 function find(album) {
     return neversorted.filter(x => x.album == album) || fullarr.filter(x => x.album == album)
 }
-
+let ordered;
 async function populate() {
     let data = await fetch("https://raw.githubusercontent.com/kiawildberger/fantanosort/master/result.json")
+    let order_data = await fetch("https://raw.githubusercontent.com/kiawildberger/fantanosort/master/ordered.json")
+    ordered = await order_data.json()
     // let data = await fetch("127.0.0.1:5500/result.json")
     json = await data.json()
     console.log(Object.values(json).length) // this is correctly 2388
-    console.log(Object.values(json)[0])
+    // console.log(Object.values(json)[0])
     // for(q in json) { // huge
     Object.values(json).forEach(i => {
         // i = json[q]
@@ -79,7 +81,7 @@ function process() {
 // or i should sort em when fetch.js run and just display the data so it loads fast(er)
 
 function sort(sortmode) {
-    let sortedarray = fullarr;
+    let sortedarray = ordered;
     countresults.innerText = ''
     if(sortmode === 0) {
         resetTR();
@@ -88,17 +90,20 @@ function sort(sortmode) {
         })
         return;
     }
-    if(sortmode === 1) {
-        sortedarray = sortedarray.sort((a, b) => b.flatscore - a.flatscore)
-        sortedarray = sortedarray.sort((a, b) => b.flatscore - a.flatscore)
+    if(sortmode === 1) { // descending, highest first
+        // sortedarray = sortedarray.sort((a, b) => b.flatscore - a.flatscore)
+        // sortedarray = sortedarray.sort((a, b) => b.flatscore - a.flatscore)
+        sortedarray.reverse()
+        console.log(sortedarray)
         resetTR()
         sortedarray.forEach(e => {
             createTR(e)
         })
     }
     if(sortmode === 2) {
-        sortedarray = sortedarray.sort((a, b) => a.flatscore - b.flatscore)
-        sortedarray = sortedarray.sort((a, b) => a.flatscore - b.flatscore)
+        // sortedarray = sortedarray.sort((a, b) => a.flatscore - b.flatscore)
+        // sortedarray = sortedarray.sort((a, b) => a.flatscore - b.flatscore)
+        console.log(sortedarray)
         resetTR()
         sortedarray.forEach(e => {
             createTR(e)

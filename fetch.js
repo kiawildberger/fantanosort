@@ -14,6 +14,7 @@ async function getPlayListItems(pid, npt=null) {
     if(npt === fpt) { // the current page token is the first one
         console.log("finished!")
         require("./override.js")
+        sortOrdered()
         return;
     }
 
@@ -62,6 +63,7 @@ async function getPlayListItems(pid, npt=null) {
                     album: album.replace("(QUICK)", ''),
                     artist: artist,
                     date: date,
+                    flatscore: t,
                     nicedate: nicedate,
                     id: a.snippet.resourceId.videoId,
                     thumb: a.snippet.thumbnails.default.url
@@ -73,58 +75,79 @@ async function getPlayListItems(pid, npt=null) {
                 album: album,
                 artist: artist,
                 date: date,
+                flatscore: t,
                 nicedate: nicedate,
                 id: a.snippet.resourceId.videoId,
                 thumb: a.snippet.thumbnails.default.url
             }
             let id = a.snippet.resourceId.videoId;
             arr[id] = g
-            switch(parseFloat(t)) { // efficiemcy
-                case 0:
-                    zeroes.push(g)
-                case 1:
-                    ones.push(g)
-                case 2:
-                    twos.push(g);
-                case 3:
-                    threes.push(g);
-                case 4:
-                    fours.push(g)
-                case 5:
-                    fives.push(g)
-                case 6:
-                    sixes.push(g)
-                case 7:
-                    sevens.push(g)
-                case 8:
-                    eights.push(g)
-                case 9:
-                    nines.push(g)
-                case 10:
-                    tens.push(g)
-                default:
-                    other.push(g)
-            }
-            ordered[0] = zeroes;
-            ordered[1] = ones;
-            ordered[2] = twos;
-            ordered[3] = threes;
-            ordered[4] = fours;
-            ordered[5] = fives;
-            ordered[6] = sixes;
-            ordered[7] = sevens;
-            ordered[8] = eights;
-            ordered[9] = nines;
-            ordered[10] = tens;
-            ordered[11] = other;
         }
     })
-    fs.writeFileSync("result.json", JSON.stringify(arr));
-    fs.writeFileSync("ordered.json", JSON.stringify(ordered))
-    // not sure about manual_todo.json cos i guess i can just assume that they 
-    // fs.writeFileSync("manual_todo.json", JSON.stringify(badarray))
+    
     getPlayListItems(playlistid, npt)
 };
 
 console.log("started!")
-getPlayListItems(playlistid)
+getPlayListItems(playlistid);
+
+async function sortOrdered() {
+    Object.values(arr).forEach(g => {
+        t = g.flatscore;
+        console.log(t)
+        switch(parseFloat(t)) { // efficiemcy
+            case 0:
+                zeroes.push(g)
+                break;
+            case 1:
+                ones.push(g)
+                break;
+            case 2:
+                twos.push(g);
+                break;
+            case 3:
+                threes.push(g);
+                break;
+            case 4:
+                fours.push(g)
+                break
+            case 5:
+                fives.push(g)
+                break
+            case 6:
+                sixes.push(g)
+                break
+            case 7:
+                sevens.push(g)
+                break
+            case 8:
+                eights.push(g)
+                break
+            case 9:
+                nines.push(g)
+                break
+            case 10:
+                tens.push(g)
+                break
+            default:
+                other.push(g)
+                break
+        }
+    })
+    ordered[0] = zeroes;
+    ordered[1] = ones;
+    ordered[2] = twos;
+    ordered[3] = threes;
+    ordered[4] = fours;
+    ordered[5] = fives;
+    ordered[6] = sixes;
+    ordered[7] = sevens;
+    ordered[8] = eights;
+    ordered[9] = nines;
+    ordered[10] = tens;
+    ordered[11] = other;
+    fs.writeFileSync("result.json", JSON.stringify(arr));
+    fs.writeFileSync("ordered.json", JSON.stringify(ordered))
+    // not sure about manual_todo.json cos i guess i can just assume that they 
+    // fs.writeFileSync("manual_todo.json", JSON.stringify(badarray))
+}
