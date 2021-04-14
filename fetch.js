@@ -7,7 +7,8 @@ let badarray = {}
 
 let ratingreg = new RegExp(/.+\/10/) // smh he had to ruin my beautiful regex because sometimes its not a definitive score (CLASSIC/:triumph:/etc)
 let normalreg = new RegExp(/[0-9]{0,10}\/10/)
-let total = 0, bad = 0, good = 0;
+
+let zeroes = [], ones = [], twos = [], threes = [], fours = [], fives = [], sixes = [], sevens = [], eights = [], nines = [], tens = [], other = [], ordered = [];
 
 async function getPlayListItems(pid, npt=null) {
     if(npt === fpt) { // the current page token is the first one
@@ -45,11 +46,14 @@ async function getPlayListItems(pid, npt=null) {
             } else {
                 artist = q[0].trim(), album = q[1].replace(/[A-Z]+ REVIEW/, "").trim()
             }
-            if(artist === "Death Grips" || album === "The Money Store") console.log(a.snippet.title)
             // try this when doing the search: https://flaviocopes.com/how-to-sort-array-by-date-javascript/
             let months = ["Jan ",'Feb ','Mar ','Apr ','May ','Jun ',"Jul ",'Aug ',"Sep ","Oct ","Nov ","Dec "]
             let date = a.snippet.publishedAt.split("T")[0];
             let nicedate = months[date.split('-')[1]-1]+date.split('-')[2]+", "+date.split('-')[0]
+
+            let t;
+            if(r !== null && r instanceof Array) r = r.flat()
+            if(r !== null && !r.includes(null)) t = r[0].split('/')[0] || r.split("/")[0]
             if(r === null) {
                 // this means that theres just no score in the description which is ANNOYING and BAD
                 badarray[a.snippet.resourceId.videoId] = {
@@ -62,9 +66,8 @@ async function getPlayListItems(pid, npt=null) {
                     id: a.snippet.resourceId.videoId,
                     thumb: a.snippet.thumbnails.default.url
                 }
-                bad++
             }
-            arr[a.snippet.resourceId.videoId] = { // https://google.com/search?q=javascript+remove+duplicates+from+array
+            let g = { // https://google.com/search?q=javascript+remove+duplicates+from+array
                 title: a.snippet.title,
                 rating: r || "???/10",
                 album: album,
@@ -74,11 +77,50 @@ async function getPlayListItems(pid, npt=null) {
                 id: a.snippet.resourceId.videoId,
                 thumb: a.snippet.thumbnails.default.url
             }
-            total++;
+            let id = a.snippet.resourceId.videoId;
+            arr[id] = g
+            switch(parseFloat(t)) { // efficiemcy
+                case 0:
+                    zeroes.push(g)
+                case 1:
+                    ones.push(g)
+                case 2:
+                    twos.push(g);
+                case 3:
+                    threes.push(g);
+                case 4:
+                    fours.push(g)
+                case 5:
+                    fives.push(g)
+                case 6:
+                    sixes.push(g)
+                case 7:
+                    sevens.push(g)
+                case 8:
+                    eights.push(g)
+                case 9:
+                    nines.push(g)
+                case 10:
+                    tens.push(g)
+                default:
+                    other.push(g)
+            }
+            ordered[0] = zeroes;
+            ordered[1] = ones;
+            ordered[2] = twos;
+            ordered[3] = threes;
+            ordered[4] = fours;
+            ordered[5] = fives;
+            ordered[6] = sixes;
+            ordered[7] = sevens;
+            ordered[8] = eights;
+            ordered[9] = nines;
+            ordered[10] = tens;
+            ordered[11] = other;
         }
     })
-    console.log(Object.keys(arr).length)
-    // fs.writeFileSync("result.json", JSON.stringify(arr));
+    fs.writeFileSync("result.json", JSON.stringify(arr));
+    fs.writeFileSync("ordered.json", JSON.stringify(ordered))
     // not sure about manual_todo.json cos i guess i can just assume that they 
     // fs.writeFileSync("manual_todo.json", JSON.stringify(badarray))
     getPlayListItems(playlistid, npt)
