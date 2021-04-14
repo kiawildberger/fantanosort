@@ -94,7 +94,6 @@ getPlayListItems(playlistid);
 async function sortOrdered() {
     Object.values(arr).forEach(g => {
         t = g.flatscore;
-        console.log(t)
         switch(parseFloat(t)) { // efficiemcy
             case 0:
                 zeroes.push(g)
@@ -134,18 +133,18 @@ async function sortOrdered() {
                 break
         }
     })
-    ordered[0] = zeroes;
-    ordered[1] = ones;
-    ordered[2] = twos;
-    ordered[3] = threes;
-    ordered[4] = fours;
-    ordered[5] = fives;
-    ordered[6] = sixes;
-    ordered[7] = sevens;
-    ordered[8] = eights;
-    ordered[9] = nines;
-    ordered[10] = tens;
-    ordered[11] = other;
+    ordered[0] = other;
+    ordered[1] = zeroes;
+    ordered[2] = ones;
+    ordered[3] = twos;
+    ordered[4] = threes;
+    ordered[5] = fours;
+    ordered[6] = fives;
+    ordered[7] = sixes;
+    ordered[8] = sevens;
+    ordered[9] = eights;
+    ordered[10] = nines;
+    ordered[11] = tens;
     fs.writeFileSync("result.json", JSON.stringify(arr));
     fs.writeFileSync("ordered.json", JSON.stringify(ordered))
     // not sure about manual_todo.json cos i guess i can just assume that they 

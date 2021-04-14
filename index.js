@@ -9,7 +9,8 @@ let json, fullarr = [], neversorted = [];
 function createTR(i) {
     let colors = ["#FF5F33", "#CC4C29", "#96381E", "#0A361F", "#692715", "#36140B", "#14693D", "#1D9657", "#27CC77", "#30FF94", "#30FF94"]
     let tr = document.createElement("tr")
-    let score = i.rating[0] || "no rating", color = colors[i.rating[0].toString().split('/')[0]];
+    let score = i.rating[0] || "no rating";
+    let color = colors[i.rating[0].toString().split('/')[0]];
     if(i.rating instanceof Array) score = i.rating[0]
     tr.innerHTML = `<td><a href="https://youtube.com/watch?v=${i.id}" target="_blank"><img src="${i.thumb}"</a></td>
     <td>${i.album}</td>
@@ -96,7 +97,8 @@ function sort(sortmode) {
         sortedarray.reverse()
         console.log(sortedarray)
         resetTR()
-        sortedarray.forEach(e => {
+        sortedarray.flat().forEach(e => {
+            if(e.rating === null || e.rating[0] === null) e.rating = "no rating"
             createTR(e)
         })
     }
@@ -105,7 +107,7 @@ function sort(sortmode) {
         // sortedarray = sortedarray.sort((a, b) => a.flatscore - b.flatscore)
         console.log(sortedarray)
         resetTR()
-        sortedarray.forEach(e => {
+        sortedarray.flat().forEach(e => {
             createTR(e)
         })
     }
