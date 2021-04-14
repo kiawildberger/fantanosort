@@ -2,8 +2,8 @@ let table = document.getElementById('table'),
     filter = document.getElementById("filter"), 
     button = document.querySelector('input[type="button"]'),
     countresults = document.getElementById("countresults"),
-    ssort = document.getElementById("ssort"),
-    sortdrop = document.getElementById("sortmode-drop")
+    ssort = document.getElementById("ssort");
+    // sortdrop = document.getElementById("sortmode-drop")
 let json, fullarr = [], neversorted = [];
 let ordered, neverordered, ordered_sorted;
 
@@ -61,7 +61,7 @@ button.addEventListener("click", process)
 
 function process() {
     let total;
-    sortdrop.value = "null"
+    // sortdrop.value = "null"
     if(filter.value === "") total = neversorted
     let artists = fullarr.filter(x => x.artist.toLowerCase().includes(filter.value.toLowerCase()))
     let albums = fullarr.filter(x => x.album.toLowerCase().includes(filter.value.toLowerCase()))
@@ -136,13 +136,13 @@ ssort.addEventListener("click", () => {
     sortmode = (sortmode === 2) ? 0 : parseInt(sortmode)+1; // very smart or something idk
     if(sortmode === 3) sortmode = 0 // why is it 3 sometimes
     ssort.innerHTML = sortmodecodes[sortmode]
-    sortdrop.value = "null"
+    // sortdrop.value = "null"
     sort(sortmode)
 })
-sortdrop.addEventListener("change", () => {
-    if(sortdrop.value === "null") return;
-    sortmode = sortdrop.value;
-    sortmode = (sortmode === 3) ? 0 : sortdrop.value;
-    ssort.innerHTML = sortmodecodes[parseInt(sortmode)]
-    sort(parseInt(sortmode))
-})
+// sortdrop.addEventListener("change", () => {
+//     if(sortdrop.value === "null") return;
+//     sortmode = sortdrop.value;
+//     sortmode = (sortmode === 3) ? 0 : sortdrop.value;
+//     ssort.innerHTML = sortmodecodes[parseInt(sortmode)]
+//     sort(parseInt(sortmode))
+// })

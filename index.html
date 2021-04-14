@@ -10,11 +10,11 @@
 <body>
     <div>
         <div style="margin-top:4em;margin-left:4em;">
-            This is a list of the majority of Anthony Fantano's album reviews &mdash; though I'm sure I'm missing some &mdash; made easily searchable and sortable, by score and date. Dates and times are in UTC, and data is updated hourly.<br>
+            This is a list of the majority of Anthony Fantano's album reviews &mdash; though I'm sure I'm missing some &mdash; made easily searchable and sortable, by score and date. Click on the arrow next to "Score" to sort em. Dates and times are in UTC, and data is updated hourly.<br>
             If you want to help or correct some data, head over to the <a href="https://github.com/kiawildberger/fantanosort">repo</a> and look in override.js for instructions on how to edit the review details.
         </div><br>
         <input type="text" id="filter" placeholder="Filter"> <input type="button" value="Apply" title="leave search blank for full list"><span id="countresults"></span>
-        <div class="dropmode">
+        <!-- <div class="dropmode">
             <label for="sortmode-drop">Sort by: </label>
             <select id="sortmode-drop">
                 <option value="null" selected disabled hidden></option>
@@ -22,7 +22,7 @@
                 <option value="1">Scores (descending)</option>
                 <option value="2">Scores (ascending)</option>
             </select>
-        </div>
+        </div> -->
         <table id="table">
             <tr id="headers">
                 <th>Video</th>
@@ -72,7 +72,15 @@
             width:4em;
         }
         #countresults { font-style:italic; margin-left:3em; }
-        #ssort { margin-left:0.5em; cursor:pointer; font-style:italic; font-size:0.8em; }
+        #ssort { 
+            margin-left:0.5em;
+            cursor:pointer;
+            font-style:italic;
+            font-size:1.2em;
+            /* background:blue; */
+            /* text-decoration:underline; */
+            padding:0.2em;
+        }
         .dropmode { 
             position:absolute;
             top:25%;
