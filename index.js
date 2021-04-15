@@ -3,9 +3,9 @@ let table = document.getElementById('table'),
     button = document.querySelector('input[type="button"]'),
     countresults = document.getElementById("countresults"),
     ssort = document.getElementById("ssort");
-    // sortdrop = document.getElementById("sortmode-drop")
+    sortdrop = document.getElementById("sortmode-drop")
 let json, fullarr = [], neversorted = [];
-let ordered, neverordered, ordered_sorted;
+let ordered, others;
 
 function createTR(i) {
     let colors = ["#FF5F33", "#CC4C29", "#96381E", "#0A361F", "#692715", "#36140B", "#14693D", "#1D9657", "#27CC77", "#30FF94", "#30FF94"]
@@ -31,19 +31,14 @@ async function populate() {
     let data = await fetch("https://raw.githubusercontent.com/kiawildberger/fantanosort/master/result.json")
     let order_data = await fetch("https://raw.githubusercontent.com/kiawildberger/fantanosort/master/ordered.json")
     ordered = await order_data.json()
-    neverordered = ordered;
-    // let data = await fetch("127.0.0.1:5500/result.json")
+    others = ordered[0]
+    ordered.shift()
     json = await data.json()
-    console.log(Object.values(json).length) // this is correctly 2388
-    // console.log(Object.values(json)[0])
-    // for(q in json) { // huge
+    console.log(Object.values(json).length)
     Object.values(json).forEach(i => {
-        // i = json[q]
         if(i.rating instanceof Array) i.rating = i.rating[0]
         if(i.rating === null) i.rating = "1/10"
         if(i.rating === "c") i.rating = "classic"
-        // if(i.artist === "Death Grips") console.log(i)
-        // if(i.rating && i.rating instanceof Array) i.rating = i.rating[0] // why is it null
         i.flatscore = parseFloat(i.rating.toString().replace("/10")); // some are NaN probably so jus make those special cases at the bottom ig (or the top???)
         i.flatscore = (i.flatscore > 10) ? i.flatscore = 7 : i.flatscore; // 7 is average?? idk should be in override.js so ig it doesnt matter too much
         if(!i.artist||!i.album) return;
@@ -61,7 +56,7 @@ button.addEventListener("click", process)
 
 function process() {
     let total;
-    // sortdrop.value = "null"
+    sortdrop.value = "null"
     if(filter.value === "") total = neversorted
     let artists = fullarr.filter(x => x.artist.toLowerCase().includes(filter.value.toLowerCase()))
     let albums = fullarr.filter(x => x.album.toLowerCase().includes(filter.value.toLowerCase()))
@@ -83,8 +78,7 @@ function process() {
 // or i should sort em when fetch.js run and just display the data so it loads fast(er)
 
 function sort(sortmode) {
-    let sortedarray;
-    neverordered = ordered;
+    let sortedarray = ordered.slice()
     countresults.innerText = ''
     if(sortmode === 0) {
         resetTR();
@@ -94,55 +88,33 @@ function sort(sortmode) {
         return;
     }
     if(sortmode === 1) { // descending, highest first
-        // sortedarray = sortedarray.sort((a, b) => b.flatscore - a.flatscore)
-        // sortedarray = sortedarray.sort((a, b) => b.flatscore - a.flatscore)
-
-        ordered_sorted = neverordered;
-        sortedarray = ordered_sorted;
-        if(sortedarray[sortedarray.length-1][0].flatscore === "10") {
-            let others = sortedarray.shift();
-            console.log(others[0].rating)
-            sortedarray.reverse();
-            sortedarray.push(others)
-        }
-        resetTR()
-        sortedarray.flat().forEach(e => {
-            if(e.rating === null || e.rating[0] === null) e.rating = "no rating"
-            createTR(e)
-        })
+        if(sortedarray[sortedarray.length-1][0].flatscore === "10") sortedarray = ordered.reverse();
     }
     if(sortmode === 2) { // ascending, lowest first
-        // sortedarray = sortedarray.sort((a, b) => a.flatscore - b.flatscore)
-        // sortedarray = sortedarray.sort((a, b) => a.flatscore - b.flatscore)
-        // if(parseFloat(sortedarray[0][0].rating) === NaN) sortedarray.reverse()
-        ordered_sorted = neverordered;
-        sortedarray = ordered_sorted;
-        if(sortedarray[0][0].flatscore === "10") {
-            let others = sortedarray.pop()
-            console.log(others[0].rating)
-            sortedarray.reverse();
-            sortedarray.push(others)
-        }
-        resetTR()
-        sortedarray.flat().forEach(e => {
-            createTR(e)
-        })
+        if(sortedarray[0][0].flatscore === "10") sortedarray = ordered.reverse();
     }
+    if(sortmode === 3) {
+        sortedarray = fullarr.slice().reverse()
+    }
+
+    resetTR();
+    if(sortmode !== 3) sortedarray = sortedarray.concat(others)
+    sortedarray.flat().forEach(e => { if(e.rating === null || e.rating[0] === null) e.rating = "no rating";createTR(e) })
 }
 
 let sortmode = 0; // 0 neutral 1 ascending 2 descending
-let sortmodecodes = ["&mdash;", "&#8593;", "&#8595;"]
+let sortmodecodes = ["latest", "highest", "lowest", "oldest"]
 ssort.addEventListener("click", () => {
-    sortmode = (sortmode === 2) ? 0 : parseInt(sortmode)+1; // very smart or something idk
-    if(sortmode === 3) sortmode = 0 // why is it 3 sometimes
+    sortmode = (sortmode > 2) ? 0 : parseInt(sortmode)+1; // very smart or something idk
+    // if(sortmode === 3) sortmode = 0 // why is it 3 sometimes
     ssort.innerHTML = sortmodecodes[sortmode]
-    // sortdrop.value = "null"
+    sortdrop.value = "null"
     sort(sortmode)
 })
-// sortdrop.addEventListener("change", () => {
-//     if(sortdrop.value === "null") return;
-//     sortmode = sortdrop.value;
-//     sortmode = (sortmode === 3) ? 0 : sortdrop.value;
-//     ssort.innerHTML = sortmodecodes[parseInt(sortmode)]
-//     sort(parseInt(sortmode))
-// })
+sortdrop.addEventListener("change", () => {
+    if(sortdrop.value === "null") return;
+    sortmode = parseInt(sortdrop.value);
+    // sortmode = (sortmode === 3) ? 0 : sortdrop.value;
+    ssort.innerHTML = sortmodecodes[parseInt(sortmode)]
+    sort(parseInt(sortmode))
+})
