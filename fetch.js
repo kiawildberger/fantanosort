@@ -5,6 +5,11 @@ let playlistid = "UUt7fwAhXDy3oNFTAzF2o8Pw"
 let npt, arr = {}, second = 1, fpt="no"
 let badarray = {}
 
+
+// some are self titled, if title has "self-titled" then album is artist
+
+
+
 let ratingreg = new RegExp(/.+\/10/) // smh he had to ruin my beautiful regex because sometimes its not a definitive score (CLASSIC/:triumph:/etc)
 let normalreg = new RegExp(/[0-9]{0,10}\/10/)
 
@@ -36,7 +41,7 @@ async function getPlayListItems(pid, npt=null) {
         if(a.snippet.title.includes("ALBUM REVIEW") || // did i miss some? i dont think so
             a.snippet.title.includes("MIXTAPE REVIEW") || // also maybe i should do this with regex but lmao no
             a.snippet.title.includes("EP REVIEW")) {
-            let r = a.snippet.description.match(normalreg) // this is just numbers
+            let r = a.snippet.description.replace("tumblr.com/post/10", '').replace(/theneedledrop\.com\/(?:articles)?\/?\d+\/10\//, '').match(normalreg) // this is just numbers
             let alsocouldbe = a.snippet.description.match(ratingreg) // wack
             if(r && r[0] === "/10") r[0] = alsocouldbe
             if(a.snippet.description.toLowerCase().includes("classic/10")) r = "classic/10"
