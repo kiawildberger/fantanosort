@@ -15,23 +15,6 @@ function createTR(i) {
     if(parseFloat(i.flatscore) === parseFloat(i.rating.toString().split("/")[0])) color = colors[parseFloat(i.flatscore.toString().trim())]
     let textcolor = "black"
     if(parseFloat(i.flatscore) === 5) textcolor = "white"
-    // if(i.rating === "???/10" || i.flatscore === 5) textcolor = "white";
-    // i.flatscore = parseFloat(i.flatscore)
-    // if(i.flatscore === NaN) {
-    //     textcolor = black
-    //     color = white
-    // }
-    // if( i.flatscore === NaN || 
-    //     parseFloat(i.flatscore) > 10    || 
-    //     i.rating.toString().match(/[a-zA-Z]/) ||
-    //     i.flatscore === 3 || 
-    //     i.flatscore === 5 || 
-    //     i.flatscore === 4 || 
-    //     parseFloat(i.flatscore) === NaN || 
-    //     i.rating === "classic/10") { 
-    //         textcolor = "white"
-    //     }
-    // if(i.rating === "no rating") textcolor = "black";
     if(i.rating instanceof Array) score = i.rating[0]
     tr.innerHTML = `<td class="thumb"><a href="https://youtube.com/watch?v=${i.id}" target="_blank"><img src="${i.thumb}"/></a></td>
     <td class="album">${i.album}</td>
@@ -77,7 +60,7 @@ button.addEventListener("click", process)
 
 function filternsort(fvalue) {
     // this is for all of them but ordered
-    if(!fvalue) return { bydate: neversorted.slice(), ordered: ordered }
+    if(!fvalue) return { bydate: neversorted.slice(), ordered: ordered.flat() }
     let sorting = ordered.slice().flat().reverse()
     sorting = sorting.filter(x => {
         if(x.artist !== undefined && x.artist.toLowerCase().includes(fvalue.toLowerCase()) ||
@@ -87,7 +70,6 @@ function filternsort(fvalue) {
         if(x.artist !== undefined && x.artist.toLowerCase().includes(fvalue.toLowerCase()) ||
            x.album !== undefined && x.album.toLowerCase().includes(fvalue.toLowerCase())) return x;
     })
-    sorting.concat(othersfiltered)
     // and here they are by date
     let bydate = neversorted.slice().filter(x => {
         if(x.artist !== undefined && x.artist.toLowerCase().includes(fvalue.toLowerCase()) ||
@@ -95,6 +77,7 @@ function filternsort(fvalue) {
     })
     return {
         ordered: sorting.flat(),
+        orderedothers: othersfiltered.flat(),
         bydate: bydate.flat()
     }
 }
@@ -102,33 +85,31 @@ function filternsort(fvalue) {
 let sortedarray = neversorted, issorted = false, total, isfiltered = false;
 function process() { // this should be called filter but thats the element smh
     if(filter.value === "") {
+        resetTR()
         neversorted.forEach(e => { // id like to do this in one line but guess not lmao
             createTR(e)
         })
+        countresults.innerText = neversorted.length+" reviews loaded"
+        sortdrop.value = 'null'
         return;
     }
-    // if(issorted) { arraytofilter = Object.values(sortedarray).flat(); } else { arraytofilter = fullarr }
-    // // sortdrop.value = "null"
-    // // let artists = arraytofilter.filter(x=>{if(x.artist!==undefined){x.artist.toLowerCase().includes(filter.value.toLowerCase())}})
-    // // let albums = arraytofilter.filter(x=>{if(x.album!==undefined){x.album.toLowerCase().includes(filter.value.toLowerCase())}})
-    // total = arraytofilter.filter(x => {
-    //     if(x.artist !== undefined && x.artist.toLowerCase().includes(filter.value.toLowerCase())) return x;
-    //     if(x.album !== undefined && x.album.toLowerCase().includes(filter.value.toLowerCase())) return x;
-    // })
     let fns = filternsort(filter.value)
     switch(sortmode) {
         case 0:
             total = fns.bydate
             break;
-        case 1:
-            total = fns.ordered.reverse()
+        case 1: // 10s
+            total = fns.ordered.reverse().concat(fns.orderedothers)
             break;
-        case 2:
-            total = fns.ordered
+        case 2: // 0s
+            total = fns.ordered.concat(fns.orderedothers)
             break;
         case 3:
             total = fns.bydate.reverse()
             break;
+    }
+    if(!isfiltered && (sortmode === 1 || sortmode === 2)) {
+        total = total.concat(others)
     }
     resetTR()
     // if(!total) total = Array.from(artists.concat(albums))
@@ -147,119 +128,41 @@ let arraytosort, others_tosort = []
 // when filtered, highest and lowest dont work. when sorted by highest or lowest, filtering works.
 
 function sort(sortmode) {
-    // arraytosort = ordered.slice()
-    // if(isfiltered) arraytosort = total.slice()
-    // if(sortmode === 0) {
-    //     resetTR();
-    //     if(isfiltered) {
-    //         // not sure why i needed this long one but ill keep it in case i do
-    //         // arraytosort = neversorted.slice().filter(x => x.album.toLowerCase().includes(filter.value.toLowerCase())).sort((a, b) => new Date(a.date) - new Date(b.date))
-    //         arraytosort.forEach(e => { createTR(e) })
-    //     } else {
-    //         neversorted.forEach(e => { createTR(e) })
-    //     }
-    //     return;
-    // }
-    // if(sortmode === 1) { // highest
-    //     if(isfiltered) {
-    //         // console.log("I am going to sort by highest")
-    //         // arraytosort.forEach(e => {
-    //         //     if(e.flatscore === NaN) { 
-    //         //         others_tosort.push(e);
-    //         //         arraytosort.splice(arraytosort.indexOf(e), 1);
-    //         //     }
-    //         // })
-    //         // // arraytosort.sort((a, b) => b.flatscore - a.flatscore).flat()
-    //         // arraytosort.sort((a, b) => {
-    //         //     return b.flatscore-a.flatscore;
-    //         // })
-    //         arraytosort = ordered.flat().reverse()
-    //         arraytosort = arraytosort.filter(x => {
-    //             if(x.artist !== undefined && x.artist.toLowerCase().includes(filter.value.toLowerCase())) return x;
-    //             if(x.album !== undefined && x.album.toLowerCase().includes(filter.value.toLowerCase())) return x;
-    //         })
-    //         let othersfiltered = others.slice().filter(x => {
-    //             if(x.artist !== undefined && x.artist.toLowerCase().includes(filter.value.toLowerCase())) return x;
-    //             if(x.album !== undefined && x.album.toLowerCase().includes(filter.value.toLowerCase())) return x;
-    //         })
-    //         arraytosort = arraytosort.concat(othersfiltered)
-    //     } else {
-    //         // if(arraytosort[arraytosort.length-1][0].flatscore === "10") arraytosort = ordered.reverse();
-    //         arraytosort = arraytosort.sort((a, b) => {
-    //             return b.flatscore - a.flatscore;
-    //         })
-    //         arraytosort = ordered.slice().flat().reverse()
-    //         arraytosort = arraytosort.concat(others)
-    //     }
-    // }
-
-    // if(sortmode === 2) { // lowest
-    //     if(isfiltered) {
-    //         // console.log("I am going to sort by lowest")
-    //         // arraytosort.forEach(e => {
-    //         //     if(e.flatscore === NaN) { 
-    //         //         others_tosort.push(e);
-    //         //         arraytosort.splice(arraytosort.indexOf(e), 1);
-    //         //     }
-    //         // })
-    //         // arraytosort.sort((a, b) => a.flatscore - b.flatscore).flat()
-    //         arraytosort = ordered.flat()
-    //         arraytosort = arraytosort.filter(x => {
-    //             if(x.artist !== undefined && x.artist.toLowerCase().includes(filter.value.toLowerCase())) return x;
-    //             if(x.album !== undefined && x.album.toLowerCase().includes(filter.value.toLowerCase())) return x;
-    //         })
-    //         let othersfiltered = others.slice().filter(x => {
-    //             if(x.artist !== undefined && x.artist.toLowerCase().includes(filter.value.toLowerCase())) return x;
-    //             if(x.album !== undefined && x.album.toLowerCase().includes(filter.value.toLowerCase())) return x;
-    //         })
-    //         arraytosort = arraytosort.concat(othersfiltered)
-    //     } else {
-    //         // if(arraytosort[0][0].flatscore === "10") arraytosort = ordered.reverse();
-    //         arraytosort = arraytosort.sort((a, b) => {
-    //             return a.flatscore - b.flatscore;
-    //         })
-    //         arraytosort = ordered.slice().flat()
-    //         arraytosort = arraytosort.concat(others)
-    //     }
-    // }
-
-    // if(sortmode === 3) {
-    //     arraytosort = (isfiltered) ? arraytosort.slice().reverse() : fullarr.slice().reverse();
-    // }
     let total;
     let fns = filternsort(filter.value)
+    if(isfiltered) fns.ordered = fns.ordered.reverse()
     switch(sortmode) {
         case 0:
             total = fns.bydate
             break;
-        case 1:
-            total = fns.ordered.reverse()
+        case 1: // 10s
+            total = fns.ordered.reverse().concat(fns.orderedothers)
             break;
-        case 2:
-            total = fns.ordered
+        case 2: // 0s
+            total = fns.ordered.concat(fns.orderedothers)
             break;
         case 3:
             total = fns.bydate.reverse()
             break;
     }
-
+    if(!isfiltered && (sortmode === 1 || sortmode === 2)) {
+        total = total.concat(others)
+    }
     resetTR();
     total.flat().forEach(e => {
-        if(e.rating === null || e.rating[0] === null) e.rating = "no rating";
+        if(e && e.rating === null || e.rating[0] === null) e.rating = "no rating";
         createTR(e)
     })
+    if(total.length === 0) {
+        countresults.innerText = "nothing found for \""+filter.value+"\""
+    } else {
+        if(filter.value!="") countresults.innerText = total.length +" results found for \""+filter.value+"\""
+    }
+    if(filter.value==="") countresults.innerText = neversorted.length+" reviews loaded"
 }
 
 let sortmode = 0; // 0 neutral 1 ascending 2 descending
 let sortmodecodes = ["latest", "highest", "lowest", "oldest"]
-// ssort.addEventListener("click", () => {
-//     sortmode = (sortmode > 2) ? 0 : parseInt(sortmode)+1; // very smart or something idk
-//     // if(sortmode === 3) sortmode = 0 // why is it 3 sometimes
-//     ssort.innerHTML = sortmodecodes[sortmode]
-//     sortdrop.value = "null"
-//     if(sortmode > 0) { issorted = true; } else { issorted = false; }
-//     sort(sortmode)
-// })
 sortdrop.addEventListener("change", () => {
     if(sortdrop.value === "null") return;
     sortmode = parseInt(sortdrop.value);
@@ -268,7 +171,3 @@ sortdrop.addEventListener("change", () => {
     if(sortmode > 0) { issorted = true; } else { issorted = false; }
     sort(parseInt(sortmode))
 })
-
-// function interval(v) {
-//     setInterval(() => console.log(v), 1000)
-// }
