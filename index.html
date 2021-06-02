@@ -15,6 +15,7 @@
             If you want to help or correct some data, head over to the <a href="https://github.com/kiawildberger/fantanosort">repo</a> and look in override.js for instructions on how to edit the review details.
         </div><br>
         <input type="text" id="filter" placeholder="Filter"> <input type="button" value="Apply" title="leave search blank for full list"><span id="countresults"></span>
+        <input type="button" value="View chart" id="chartbutton" title="i love data visualization" style="width:6em;">
         <div class="dropmode">
             <label for="sortmode-drop">Sort by: </label>
             <select id="sortmode-drop">
@@ -24,6 +25,9 @@
                 <option value="1">Score (10s first)</option>
                 <option value="2">Score (0s first)</option>
             </select>
+        </div>
+        <div id="chartdiv" style="display:none;">
+            <canvas id="chart"></canvas>
         </div>
         <table id="table">
             <tr id="headers">
@@ -98,5 +102,6 @@
             margin-left:1em;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
     <script src="index.js"></script>
 </body>

@@ -171,3 +171,108 @@ sortdrop.addEventListener("change", () => {
     if(sortmode > 0) { issorted = true; } else { issorted = false; }
     sort(parseInt(sortmode))
 })
+
+// chart.js
+
+let ctx = document.getElementById("chart").getContext("2d")
+let charttype = "bar";
+
+let data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] // 0-10, + wacky scores
+
+function updateData() {
+    neversorted.forEach(e => {
+        switch(e.rating.replace("/10", "")) { // pain
+            case "10":
+                data[10]++
+                break;
+            case "9":
+                data[9]++;
+                break;
+            case "8":
+                data[8]++;
+                break;
+            case "7":
+                data[7]++;
+                break;
+            case "6":
+                data[6]++;
+                break;
+            case "5":
+                data[5]++;
+                break;
+            case "4":
+                data[4]++
+                break;
+            case "3":
+                data[3]++
+                break;
+            case "2":
+                data[2]++
+                break;
+            case "1":
+                data[1]++;
+                break;
+            case "0":
+                data[0]++;
+                break;
+            default:
+                data[11]++
+                break;
+        }
+    })
+}
+
+let chart = new Chart(ctx, {
+    type: charttype,
+    data: {
+        labels: ["0/10", "1/10", "2/10", "3/10", "4/10", "5/10", "6/10", "7/10", "8/10", "9/10", "10/10"],
+        datasets: [{
+            label: "amount of scores given",
+            data: data,
+            backgroundColor: [
+                'rgba(255, 95, 51, 0.8)',
+                'rgba(204, 76, 41, 0.8)',
+                'rgba(150, 56, 30, 0.8)', // 2
+                'rgba(133, 50, 27, 0.8)', // 3
+                'rgba(105, 39, 21, 0.8)', // 4
+                'rgba(54, 20, 11, 0.8)', // 5
+                'rgba(20, 105, 61, 0.8)', // 6
+                'rgba(29, 150, 87, 0.8)', // 7
+                'rgba(39, 204, 119, 0.8)', // 8
+                'rgba(48, 255, 148, 0.8)', // 9
+                'rgba(48, 255, 148, 0.8)' // 10
+            ],
+            borderColor: [
+                'rgb(0, 0, 0)'
+            ],
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+})
+
+document.getElementById("chartbutton").addEventListener("click", () => {
+    let chartElem = document.getElementById("chartdiv")
+    if(chartElem.style.display === "none") {
+        chartElem.style.display = "block"
+        document.getElementById("table").style.display = "none"
+        document.getElementById("table").style.display = "none"
+        document.getElementById("sortmode-drop").disabled = true
+        document.getElementById("filter").disabled = true
+        document.getElementById("chartbutton").value = "Hide chart"
+    } else {
+        chartElem.style.display = "none";
+        document.getElementById("table").style.display = "block"
+        document.getElementById("sortmode-drop").disabled = false
+        document.getElementById("filter").disabled = false
+        document.getElementById("chartbutton").value = "View chart"
+    }
+    updateData()
+})
+
