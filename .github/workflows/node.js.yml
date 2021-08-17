@@ -1,9 +1,5 @@
 name: Node.js CI
 on:
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ master ]
   schedule:
     - cron: '0 * * * *'
 
@@ -25,13 +21,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm start ${{ secrets.YT_KEY }}
-  
-    - uses: EndBug/add-and-commit@v7
-    - uses: GitStartHQ/actions@v0.0.6
-      with:
-        upstream: 'https://github.com/kiawildberger/fantanosort'
-        add: 'result.json'
-        author_name: kiawildberger
-        author_email: kiawildberger@gmail.com
-        message: 'update data from action'
-        push: origin master # do it work? is it necessary? we will see
+    - run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add result.json
+        git commit -m "update data"
+        git push
