@@ -27,7 +27,9 @@ jobs:
     - run: npm start ${{ secrets.YT_KEY }}
   
     - uses: EndBug/add-and-commit@v7
+    - uses: GitStartHQ/actions@v0.0.6
       with:
+        upstream: 'https://github.com/kiawildberger/fantanosort'
         add: 'result.json'
         author_name: kiawildberger
         author_email: kiawildberger@gmail.com
