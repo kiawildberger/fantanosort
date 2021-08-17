@@ -22,8 +22,8 @@ jobs:
     - run: npm ci
     - run: npm start ${{ secrets.YT_KEY }}
     - run: |
-        git config user.name github-actions
-        git config user.email github-actions@github.com
+        git config user.name kiawildberger
+        git config user.email kiawildberger@gmail.com
         git add result.json
         git commit -m "update data"
         git push
