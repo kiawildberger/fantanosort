@@ -25,5 +25,6 @@ jobs:
         git config user.name kiawildberger
         git config user.email kiawildberger@gmail.com
         git add result.json
+        git add ordered.json
         git commit -m "update data"
         git push
