@@ -1,4 +1,4 @@
-const axios = require("axios"), fs = require("fs")
+const axios = require("axios"), fs = require("fs"), result = require('./result.json'), core = require('@actions/core')
 // config = require("./config.json")
 const KEY = process.argv[2]
 let playlistid = "UUt7fwAhXDy3oNFTAzF2o8Pw"
@@ -150,6 +150,13 @@ async function sortOrdered() {
     ordered[9] = eights;
     ordered[10] = nines;
     ordered[11] = tens;
+    if(Object.keys(result).length === arr.length) {
+        // there is no change, exit the action and make it so it doesn't fail
+        // can i like cancel actions
+        core.setMessage("no update")
+        // core.setOutput()
+        process.exit(0)
+    }
     fs.writeFileSync("result.json", JSON.stringify(arr));
     fs.writeFileSync("ordered.json", JSON.stringify(ordered))
     // not sure about manual_todo.json cos i guess i can just assume that they 
