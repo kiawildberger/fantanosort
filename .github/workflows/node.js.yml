@@ -26,5 +26,5 @@ jobs:
         git config user.email kiawildberger@gmail.com
         git add result.json
         git add ordered.json
-        git diff --exit-code || git commit -m "update data"
+        git commit -m "update data"
         git push
