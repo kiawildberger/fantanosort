@@ -222,6 +222,8 @@ function updateData() {
     })
 }
 
+data.forEach(e => { data[data.indexOf(e)] = e/3 })
+
 let chart = new Chart(ctx, {
     type: charttype,
     data: {
