@@ -1,0 +1,38 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin-top:4em;
+}
+
+.Dropdown-root {
+  width:8em;
+  display:inline-block;
+  margin-left:3em;
+}
+
+#reviewtable {
+  border-top:2px solid black;
+}
+
+.reviewrow {
+
+}
+.reviewrow > div {
+  display:inline-block;
+  margin:2em;
+}
+.reviewrow > .title {
+  width:10em;
+  margin:0 0 0 10em;
+}
+.reviewrow > .artist {
+  margin-left:20%;
+}
+.reviewrow > .rating {
+  float:right;
+  margin-right:20%;
+}
