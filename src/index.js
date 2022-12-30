@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css'
-let fullarr = [], sortingarr= [], sortstate = 'date'
+let sortingarr = [], fullarr = [], sortstate = 'date'
 const sortoptions = ["date", "artist", "score"]
 
 class ReviewRow extends React.Component {
@@ -12,40 +11,102 @@ class ReviewRow extends React.Component {
     super(props)
   }
   render() {
-    return (<div className="reviewrow">
-      <div className="title">{this.props.title}</div>
-      <div className="artist">{this.props.artist}</div>
-      <div className="rating">{this.props.rating}</div>
-    </div>)
+    return (<tr className="reviewrow">
+      <td className="title">{this.props.title}</td>
+      <td className="artist">{this.props.artist}</td>
+      <td className="rating">{this.props.rating}</td>
+      <td className="date">{this.props.date}</td>
+    </tr>)
     // <img className="thumbnail" src={this.props.turl}/>
   }
 }
 
-class ReviewTable extends React.Component {
+class Wrapper extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {sort: this.props.by} // date, artist, score, search
+    this.state = {sort: props.sort}
+  }
+  changeSort = newsort => {
+    console.log(newsort+"!!")
+    this.setState({sort: newsort})
   }
   render() {
-    fullarr = fullarr.slice(1,6)
-    console.log(fullarr)
-    switch(this.props.by) {
+    return (
+      <div>
+        <div className="sortWrapper">
+        <span>Sorting by:</span> <SortChooser default="date" click={this.changeSort.bind(this)}/>
+      </div>
+
+      <ReviewTable by={this.state.sort} id="reviewtable"/>
+      </div>
+    )
+  }
+}
+
+const SortChooser = props => {
+  console.log(props)
+  const [choice, setChoice] = useState(props.default);
+  const renderChoices = () => {
+    for(let i in sortoptions) {
+      i = sortoptions[i]
+      return <span className="sortchoice" onClick={() => {props.click(i); setChoice(i)}}>{i}</span>
+      // return <span className="sortchoice" onClick={() => {console.log(props)}}>{i}</span>
+    }
+  }
+  return (
+    <div className="sortchooser" by={choice}>
+      <div className="choicewrapper">
+        <span className="sortchoice" onClick={() => {props.click("date"); setChoice("date")}}>{"date"}</span>
+        <span className="sortchoice" onClick={() => {props.click("artist"); setChoice("artist")}}>{"artist"}</span>
+        <span className="sortchoice" onClick={() => {props.click("score"); setChoice("score")}}>{"score"}</span>
+      </div>
+    </div>
+  )
+}
+
+const ReviewTable = props => {
+  // props.state = {sort: sortstate} // date, artist, score, search
+  const [sort, setSort] = useState(props.by)
+  // props.currentconfig = fullarr
+  function parseSort() {
+    switch(sort) {
+      case "artist":
+        sortingarr = sortingarr.sort((a, b) => a.props.artist.localeCompare(b.props.artist))
+        return (
+          <table by={props.by} id="reviewtable">
+            <tbody>
+                {sortingarr}
+              </tbody>
+          </table>
+        )
+        case "score":
+          sortingarr = sortingarr.sort((a, b) => Math.floor(a.props.rating.split("/")[0]) > parseInt(b.props.rating.split("/")[0]))
+          return (
+            <table by={props.by} id="reviewtable">
+              <tbody>
+                {sortingarr}
+              </tbody>
+            </table>
+          )
+      default:
       case "date": // default
         return (
-          <div by={this.props.by} id="reviewtable">
-            {fullarr}
-          </div>
-        )
-      case "artist":
-        fullarr = fullarr.sort((a, b) => a.artist.localeCompare(b.artist))
-        console.log(fullarr)
-        return (
-          <div by={this.props.by} id="reviewtable">
-            {fullarr}
-          </div>
+          <table by={props.by} id="reviewtable">
+            <tbody>
+                {fullarr}
+              </tbody>
+          </table>
         )
     }
-    return fullarr.slice(1, 6)
+  }
+  useEffect(() => {
+    console.log("effect used! should sort by "+props.by)
+    setSort(props.by)
+  })
+  // let result = parseSort()
+  return parseSort()
+
+    // all this shit is leftover. idk what it does but its supposed to replace that switch up there?? who fucken knows man
     // sorting = sorting.filter(x => {
     //     if(x.artist !== undefined && x.artist.toLowerCase().includes(fvalue.toLowerCase()) ||
     //        x.album !== undefined && x.album.toLowerCase().includes(fvalue.toLowerCase())) return x;
@@ -59,7 +120,6 @@ class ReviewTable extends React.Component {
     //     if(x.artist !== undefined && x.artist.toLowerCase().includes(fvalue.toLowerCase()) ||
     //        x.album !== undefined && x.album.toLowerCase().includes(fvalue.toLowerCase())) return x;
     // })
-  }
 }
 
 // function updateSort() {
@@ -68,27 +128,21 @@ class ReviewTable extends React.Component {
 // }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-let rtable = <ReviewTable by={sortstate} id="reviewtable"/>;
 loadJSON().then(() => {
   root.render(
-    <div>
-      <span className="sortWrapper">
-        <span>Sorting by:</span> <Dropdown options={sortoptions} onChange={sortchange} value="date" />
-      </span>
-
-      {rtable}
-    </div>
+    <Wrapper sort="date"/>
   )
 
-  function sortchange() {
-    // is this bad. i think it might be.
-    console.log(rtable.props)
-    // document.getElementById("reviewtable").setAttribute("by",
-    //   document.querySelector("div.Dropdown-placeholder.is-selected").innerText)
-    // rtable.setState({sort: document.querySelector("div.Dropdown-placeholder.is-selected").innerText})
-    rtable.props.updateSort()
-    console.log(rtable.props)
-  }
+  // root.render(
+  //   <div>
+  //     <div className="sortWrapper">
+  //       <span>Sorting by:</span> <SortChooser default="date" click={sortchange}/>
+  //     </div>
+
+  //     {/* {rtable} */}
+  //     <ReviewTable by="date" id="reviewtable"/>
+  //   </div>
+  // )
 })
 
 async function loadJSON() {
@@ -105,8 +159,8 @@ async function loadJSON() {
         i.flatscore = (i.flatscore > 10) ? i.flatscore = 7 : i.flatscore; // 7 is average?? idk should be in override.js so ig it doesnt matter too much
         if(!i.artist||!i.album) return;
         let turl = "https:/\/i.ytimg.com/vi/"+i.id+"/default.jpg"
-        fullarr.push(<ReviewRow key={i.id} turl={turl} artist={i.artist} title={i.album} rating={i.rating} />)
-        sortingarr = fullarr.slice()
+        sortingarr.push(<ReviewRow key={i.id} turl={turl} artist={i.artist} title={i.album} rating={i.rating} date={i.date} />)
+        fullarr = sortingarr.slice()
   })
 }
 
