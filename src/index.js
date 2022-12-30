@@ -148,7 +148,8 @@ loadJSON().then(() => {
 async function loadJSON() {
   let data = await fetch("https://raw.githubusercontent.com/kiawildberger/fantanosort/master/result.json");
   // if i use react to fix my shitty sort bs then maybe i dont need the ordered data??? would be nice tbh
-  // let order_data = await fetch("https://raw.githubusercontent.com/kiawildberger/fantanosort/master/ordered.json")
+  let order_data = await fetch("https://raw.githubusercontent.com/kiawildberger/fantanosort/master/ordered.json")
+  let json = await data.json()
   console.log(Object.values(json).length)
   Object.values(json).forEach(i => {
         if(i.rating instanceof Array) i.rating = i.rating[0]
