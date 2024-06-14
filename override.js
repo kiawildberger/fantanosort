@@ -23,6 +23,9 @@
     set("CJDcbwpsjU0", "rating", "0.94721/10")
     set("8PqLOyHA7BI", "rating", "8/10")
     set("1_d3YFEGeCQ", "rating", "8/10")
+    set("vN6MuBfbt_E", "album", "The Tortured Poets Department ANTHOLOGY") // ttpd review title is wacky
+    set("vN6MuBfbt_E", "artist", "Taylor Swift")
+    set("vN6MuBfbt_E", "rating", "4")
     
     fs.writeFileSync("./result.json", JSON.stringify(data))
 })();
