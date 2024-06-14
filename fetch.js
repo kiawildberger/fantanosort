@@ -62,10 +62,11 @@ async function getPlayListItems(pid, npt=null) {
             if(r !== null && !r.includes(null)) t = r[0].split('/')[0] || r.split("/")[0]
             if(r === null) {
                 // this means that theres just no score in the description which is ANNOYING and BAD
+                album = "fix please" // prevents (sort of) issues if it can't parse the title AND there's no description score
                 badarray[a.snippet.resourceId.videoId] = {
                     title: a.snippet.title,
                     rating: "not in the description",
-                    album: album.replace("(QUICK)", '') || "needs fix pls",
+                    album: album.replace("(QUICK)", ''),
                     artist: artist,
                     date: date,
                     flatscore: t,
